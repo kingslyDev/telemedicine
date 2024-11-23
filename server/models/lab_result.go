@@ -14,7 +14,12 @@ type LabResult struct {
     CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
     UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 
-    // Relations
-    Patient  Patient `gorm:"foreignKey:PatientID" json:"patient"`
-    Staff    Staff   `gorm:"foreignKey:UploadedBy" json:"uploaded_by_staff"`
+    // Relasi ke Patient dan Staff
+    Patient *Patient `gorm:"foreignKey:PatientID;references:PatientID;constraint:OnDelete:CASCADE;" json:"patient"`
+    Staff   *Staff   `gorm:"foreignKey:UploadedBy;references:StaffID;constraint:OnDelete:CASCADE;" json:"uploaded_by_staff"`
+}
+
+// TableName untuk menghindari pluralisasi yang tidak diinginkan
+func (LabResult) TableName() string {
+    return "lab_results"
 }

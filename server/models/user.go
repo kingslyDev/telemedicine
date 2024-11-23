@@ -21,11 +21,9 @@ type User struct {
     Role         string    `gorm:"type:varchar(20);not null" json:"role"` // 'patient', 'doctor', 'staff', 'admin'
     CreatedAt    time.Time `gorm:"autoCreateTime" json:"created_at"`
     UpdatedAt    time.Time `gorm:"autoUpdateTime" json:"updated_at"`
-    
-    // Relations
-    Patient      *Patient     `gorm:"foreignKey:UserID" json:"patient,omitempty"`
-    Doctor       *Doctor      `gorm:"foreignKey:UserID" json:"doctor,omitempty"`
-    Staff        *Staff       `gorm:"foreignKey:UserID" json:"staff,omitempty"`
-    Admin        *Admin       `gorm:"foreignKey:UserID" json:"admin,omitempty"`
-    Notifications []Notification `gorm:"foreignKey:UserID" json:"notifications,omitempty"`
+}
+
+// TableName untuk menghindari pluralisasi yang tidak diinginkan
+func (User) TableName() string {
+    return "users"
 }

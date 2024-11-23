@@ -7,13 +7,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/kingslyDev/telemedicine/server/config"
+	"github.com/kingslyDev/telemedicine/server/models"
 )
 
 func main() {
-	
-    router := gin.Default()
-
-	err := godotenv.Load()
+    // Memuat file .env jika ada
+    err := godotenv.Load()
     if err != nil {
         log.Println("No .env file found")
     }
@@ -21,7 +20,35 @@ func main() {
     // Inisialisasi database
     config.InitDB()
 
-    // Mengaktifkan CORS
+    // Aktifkan mode debug GORM (opsional, untuk debugging)
+    config.DB = config.DB.Debug()
+
+    // Lakukan migrasi database dengan urutan yang benar
+    err = config.DB.AutoMigrate(
+        &models.User{},
+        &models.Admin{},
+        &models.Staff{},
+        &models.Doctor{},
+        &models.Patient{},
+        &models.Notification{},
+        &models.AccessControl{},
+        &models.Appointment{},
+        &models.DoctorSchedule{},
+        &models.MedicalRecord{},
+        &models.MedicalImage{},
+        &models.LabResult{},
+        &models.DataMiningResult{},
+    )
+    if err != nil {
+        log.Fatalf("Failed to migrate database: %v", err)
+    }
+
+    log.Println("Database migration completed")
+
+    // Inisialisasi router Gin
+    router := gin.Default()
+
+    // Mengaktifkan CORS untuk mengizinkan akses dari domain lain
     router.Use(cors.Default())
 
     // Route sederhana untuk pengujian
@@ -30,6 +57,9 @@ func main() {
             "message": "pong",
         })
     })
+
+    // Tambahkan route lain di sini (misalnya, registrasi atau login)
+    // router.POST("/register", RegisterHandler)
 
     // Menjalankan server di port 8080
     router.Run(":8080")

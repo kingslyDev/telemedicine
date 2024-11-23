@@ -16,9 +16,17 @@ type Doctor struct {
     CreatedAt          time.Time `gorm:"autoCreateTime" json:"created_at"`
     UpdatedAt          time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 
+    // Relasi ke User
+    User *User `gorm:"foreignKey:UserID;references:UserID;constraint:OnDelete:CASCADE;" json:"user"`
+
     // Relations
-    Appointments      []Appointment       `gorm:"foreignKey:DoctorID" json:"appointments,omitempty"`
-    MedicalRecords    []MedicalRecord     `gorm:"foreignKey:DoctorID" json:"medical_records,omitempty"`
-    DoctorSchedules   []DoctorSchedule    `gorm:"foreignKey:DoctorID" json:"doctor_schedules,omitempty"`
-    DataMiningResults []DataMiningResult  `gorm:"foreignKey:DoctorID" json:"data_mining_results,omitempty"`
+    Appointments      []Appointment      `gorm:"foreignKey:DoctorID;references:DoctorID;constraint:OnDelete:CASCADE;" json:"appointments,omitempty"`
+    MedicalRecords    []MedicalRecord    `gorm:"foreignKey:DoctorID;references:DoctorID;constraint:OnDelete:CASCADE;" json:"medical_records,omitempty"`
+    DoctorSchedules   []DoctorSchedule   `gorm:"foreignKey:DoctorID;references:DoctorID;constraint:OnDelete:CASCADE;" json:"doctor_schedules,omitempty"`
+    DataMiningResults []DataMiningResult `gorm:"foreignKey:DoctorID;references:DoctorID;constraint:OnDelete:CASCADE;" json:"data_mining_results,omitempty"`
+}
+
+// TableName untuk menghindari pluralisasi yang tidak diinginkan
+func (Doctor) TableName() string {
+    return "doctors"
 }
