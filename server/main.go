@@ -24,21 +24,21 @@ func main() {
     config.DB = config.DB.Debug()
 
     // Lakukan migrasi database dengan urutan yang benar
-    err = config.DB.AutoMigrate(
-        &models.User{},
-        &models.Admin{},
-        &models.Staff{},
-        &models.Doctor{},
-        &models.Patient{},
-        &models.Notification{},
-        &models.AccessControl{},
-        &models.Appointment{},
-        &models.DoctorSchedule{},
-        &models.MedicalRecord{},
-        &models.MedicalImage{},
-        &models.LabResult{},
-        &models.DataMiningResult{},
-    )
+	err = config.DB.AutoMigrate(
+		&models.User{},
+		&models.Patient{},
+		&models.Doctor{},
+		&models.Staff{},
+		&models.Admin{},
+		&models.Appointment{},
+		&models.DoctorSchedule{},
+		&models.MedicalRecord{},
+		&models.MedicalImage{},
+		&models.DataMiningResult{},
+		&models.LabResult{},
+		&models.Notification{},
+		&models.AccessControl{},
+	)
     if err != nil {
         log.Fatalf("Failed to migrate database: %v", err)
     }
