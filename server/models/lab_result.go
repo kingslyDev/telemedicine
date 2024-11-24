@@ -1,16 +1,15 @@
 package models
 
-import (
-	"time"
-)
+import "time"
 
 type LabResult struct {
-	LabResultID uint      `gorm:"primaryKey" json:"lab_result_id"`
-	PatientID   uint      `json:"patient_id"`  // FK ke Patient
-	TestType    string    `gorm:"not null" json:"test_type"` // Jenis tes, misalnya tes darah
-	TestResults string    `gorm:"type:text;not null" json:"test_results"` // Hasil tes dalam format JSON atau teks
-	TestDate    time.Time `gorm:"type:date" json:"test_date"`
-	UploadedBy  uint      `json:"uploaded_by"` // FK ke Staff
-	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+    ID          uint      `gorm:"primaryKey" json:"id"`
+	PatientID  uint      `gorm:"not null" json:"patient_id"`
+    Patient    Patient   `gorm:"constraint:OnDelete:CASCADE;" json:"patient"`
+    TestType    string    `json:"test_type"`
+    TestResults string    `json:"test_results"`
+    TestDate    time.Time `json:"test_date"`
+    UploadedBy  uint      `gorm:"not null" json:"uploaded_by"`
+    CreatedAt   time.Time `json:"created_at"`
+    UpdatedAt   time.Time `json:"updated_at"`
 }

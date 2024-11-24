@@ -1,16 +1,15 @@
 package models
 
-import (
-	"time"
-)
+import "time"
 
 type DoctorSchedule struct {
-	ScheduleID        uint      `gorm:"primaryKey" json:"schedule_id"`
-	DoctorID          uint      `json:"doctor_id"`
-	AvailableDate     time.Time `gorm:"type:date" json:"available_date"`
-	AvailableTimeStart string   `gorm:"type:time" json:"available_time_start"`
-	AvailableTimeEnd   string   `gorm:"type:time" json:"available_time_end"`
-	IsAvailable        bool     `gorm:"default:true" json:"is_available"`
-	CreatedAt          time.Time `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt          time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+    ID              uint      `gorm:"primaryKey" json:"id"`
+	DoctorID          uint      `gorm:"not null" json:"doctor_id"` // Foreign key ke tabel Doctor
+	Doctor            Doctor    `gorm:"constraint:OnDelete:CASCADE;" json:"doctor"` // Relasi ke Doctor
+    AvailableDate   time.Time `json:"available_date"`
+    AvailableTimeStart time.Time `json:"available_time_start"`
+    AvailableTimeEnd   time.Time `json:"available_time_end"`
+    IsAvailable     bool      `gorm:"default:true" json:"is_available"`
+    CreatedAt       time.Time `json:"created_at"`
+    UpdatedAt       time.Time `json:"updated_at"`
 }

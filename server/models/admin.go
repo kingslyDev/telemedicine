@@ -1,15 +1,14 @@
 package models
 
-import (
-	"time"
-)
+import "time"
 
 type Admin struct {
-	AdminID    uint      `gorm:"primaryKey" json:"admin_id"`
-	UserID     uint      `gorm:"unique;not null" json:"user_id"`
-	FirstName  string    `gorm:"not null" json:"first_name"`
-	LastName   string    `gorm:"not null" json:"last_name"`
-	Privileges string    `json:"privileges"`
-	CreatedAt  time.Time `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt  time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+    ID         uint      `gorm:"primaryKey" json:"id"`
+    UserID    uint      `gorm:"not null;unique" json:"user_id"` // Foreign key ke tabel User
+	User      User      `gorm:"constraint:OnDelete:CASCADE;" json:"user"` // Relasi ke User
+	FirstName string    `json:"first_name"`
+    LastName   string    `gorm:"not null" json:"last_name"`
+    Privileges string    `json:"privileges"` // Can store JSON
+    CreatedAt  time.Time `json:"created_at"`
+    UpdatedAt  time.Time `json:"updated_at"`
 }

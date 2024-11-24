@@ -1,17 +1,18 @@
 package models
 
-import (
-	"time"
-)
+import "time"
 
 type MedicalRecord struct {
-	MedicalRecordID uint      `gorm:"primaryKey" json:"medical_record_id"`
-	PatientID       uint      `json:"patient_id"`
-	DoctorID        uint      `json:"doctor_id"`
-	AppointmentID   uint      `json:"appointment_id"`
-	Diagnosis       string    `json:"diagnosis"`
-	TreatmentPlan   string    `json:"treatment_plan"`
-	Notes           string    `json:"notes"`
-	CreatedAt       time.Time `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt       time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+    ID            uint      `gorm:"primaryKey" json:"id"`
+	PatientID      uint        `gorm:"not null" json:"patient_id"`      // Foreign key ke tabel Patients
+	Patient        Patient     `gorm:"constraint:OnDelete:CASCADE;" json:"patient"` // Relasi ke Patients
+	DoctorID       uint        `gorm:"not null" json:"doctor_id"`       // Foreign key ke tabel Doctors
+	Doctor         Doctor      `gorm:"constraint:OnDelete:CASCADE;" json:"doctor"`  // Relasi ke Doctors
+	AppointmentID  *uint       `json:"appointment_id"`                 // Foreign key ke tabel Appointments (opsional)
+	Appointment    *Appointment `gorm:"constraint:OnDelete:SET NULL;" json:"appointment"` // Relasi ke Appointments
+    Diagnosis     string    `json:"diagnosis"`
+    TreatmentPlan string    `json:"treatment_plan"`
+    Notes         string    `json:"notes"`
+    CreatedAt     time.Time `json:"created_at"`
+    UpdatedAt     time.Time `json:"updated_at"`
 }

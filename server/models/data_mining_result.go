@@ -1,17 +1,15 @@
 package models
 
-import (
-	"time"
-)
+import "time"
 
 type DataMiningResult struct {
-	AnalysisID      uint      `gorm:"primaryKey" json:"analysis_id"`
-	ImageID         uint      `json:"image_id"`  // FK ke MedicalImage
-	PatientID       uint      `json:"patient_id"`
-	DoctorID        uint      `json:"doctor_id"`
-	DiseaseDetected string    `json:"disease_detected"`  // Penyakit yang terdeteksi
-	ConfidenceScore float64   `json:"confidence_score"` // Tingkat kepercayaan prediksi
-	AnalysisDate    time.Time `json:"analysis_date"`
-	CreatedAt       time.Time `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt       time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+    ID             uint      `gorm:"primaryKey" json:"id"`
+    ImageID        uint      `gorm:"not null" json:"image_id"`
+    PatientID      uint      `gorm:"not null" json:"patient_id"`
+    DoctorID       uint      `gorm:"not null" json:"doctor_id"`
+    DiseaseDetected string   `json:"disease_detected"`
+    ConfidenceScore float64  `json:"confidence_score"`
+    AnalysisDate   time.Time `json:"analysis_date"`
+    CreatedAt      time.Time `json:"created_at"`
+    UpdatedAt      time.Time `json:"updated_at"`
 }
