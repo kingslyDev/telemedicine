@@ -6,7 +6,6 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('access_token'));
-
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem('user');
     try {
@@ -17,40 +16,31 @@ export const AuthProvider = ({ children }) => {
     }
   });
 
-  const [isLoading, setIsLoading] = useState(false); // Opsional: untuk status loading
-
   const login = async (email, password) => {
-    setIsLoading(true);
-    try {
-      const response = await loginService(email, password);
-      console.log('Login response:', response); // Debug log
-      if (response && response.token) {
-        localStorage.setItem('access_token', response.token);
-        if (response.user) {
-          localStorage.setItem('user', JSON.stringify(response.user));
-          setUser(response.user);
-        }
-        setIsAuthenticated(true);
-      } else {
-        throw new Error('Invalid login response');
-      }
-      return response;
-    } catch (error) {
-      console.error('Login failed:', error.response?.data || error.message);
-      throw error;
-    } finally {
-      setIsLoading(false);
+    const response = await loginService(email, password);
+    if (response && response.token && response.user) {
+      // Simpan token ke localStorage
+      localStorage.setItem('access_token', response.token);
+
+      // Simpan user ke localStorage, termasuk role
+      localStorage.setItem('user', JSON.stringify(response.user));
+      setUser(response.user); // Simpan user ke state
+
+      setIsAuthenticated(true);
+    } else {
+      throw new Error('Invalid login response');
     }
+    return response;
   };
 
   const logout = () => {
     localStorage.removeItem('access_token');
-    localStorage.removeItem('user'); // Hapus informasi pengguna saat logout
+    localStorage.removeItem('user');
     setIsAuthenticated(false);
-    setUser(null); // Reset state user
+    setUser(null);
   };
 
-  return <AuthContext.Provider value={{ isAuthenticated, user, login, logout, isLoading }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => useContext(AuthContext);

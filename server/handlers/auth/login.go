@@ -1,3 +1,4 @@
+// src/auth/login.go
 package auth
 
 import (
@@ -16,6 +17,13 @@ import (
 type LoginInput struct {
 	Email    string `json:"email" binding:"required,email"` // Validasi tambahan untuk memastikan format email
 	Password string `json:"password" binding:"required"`    // Password wajib diisi
+}
+
+// Struktur output untuk user
+type UserResponse struct {
+	ID    uint   `json:"id"`
+	Role  string `json:"role"`
+	Username string `json:"username"`
 }
 
 // Handler untuk login
@@ -49,10 +57,10 @@ func LoginHandler(c *gin.Context) {
 
 	// Buat JWT token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user_id":  user.ID,                         // ID pengguna dari database
-		"email":    user.Email,                      // Email pengguna
-		"role":     user.Role,                       // Role pengguna (misal: patient, doctor)
-		"exp":      time.Now().Add(72 * time.Hour).Unix(), // Token berlaku selama 72 jam
+		"user_id": user.ID,                           // ID pengguna dari database
+		"email":   user.Email,                        // Email pengguna
+		"role":    user.Role,                         // Role pengguna (misal: patient, doctor)
+		"exp":     time.Now().Add(72 * time.Hour).Unix(), // Token berlaku selama 72 jam
 	})
 
 	// Tanda tangani token dengan secret
@@ -62,6 +70,16 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 
-	// Kirim token ke client
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+	// Struktur respons user
+	userResp := UserResponse{
+		ID:    user.ID,
+		Role:  user.Role,
+		Username: user.Username,
+	}
+
+	// Kirim token dan data user ke client
+	c.JSON(http.StatusOK, gin.H{
+		"token": tokenString,
+		"user":  userResp,
+	})
 }

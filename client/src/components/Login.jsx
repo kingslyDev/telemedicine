@@ -27,8 +27,8 @@ const Login = () => {
     }
 
     try {
-      await login(email, password); // Call login from context
-      setMessage('Login successful! 🎉');
+      const response = await login(email, password); // Call login from context
+      setMessage(`Login successful! 🎉 Role: ${response.user.role}`); // Debug role
       // Redirect ke halaman dashboard atau halaman yang diminta sebelumnya
       navigate(from, { replace: true });
     } catch (error) {
