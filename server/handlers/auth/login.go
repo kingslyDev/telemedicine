@@ -14,8 +14,8 @@ import (
 
 // Struktur input untuk login
 type LoginInput struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Email    string `json:"email" binding:"required,email"` // Validasi tambahan untuk memastikan format email
+	Password string `json:"password" binding:"required"`    // Password wajib diisi
 }
 
 // Handler untuk login
@@ -27,20 +27,20 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 
-	// Cari user berdasarkan username
+	// Cari user berdasarkan email
 	var user models.User
-	if err := config.DB.Where("username = ?", input.Username).First(&user).Error; err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
+	if err := config.DB.Where("email = ?", input.Email).First(&user).Error; err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"}) // Email tidak ditemukan
 		return
 	}
 
 	// Bandingkan password yang di-hash
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(input.Password)); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"}) // Password salah
 		return
 	}
 
-	// Pastikan `JWT_SECRET` ada
+	// Pastikan variabel lingkungan `JWT_SECRET` ada
 	secret := os.Getenv("JWT_SECRET")
 	if secret == "" {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "JWT secret is not configured"})
@@ -49,10 +49,10 @@ func LoginHandler(c *gin.Context) {
 
 	// Buat JWT token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user_id":  user.ID, // Ganti UserID dengan ID
-		"username": user.Username,
-		"role":     user.Role,
-		"exp":      time.Now().Add(time.Hour * 72).Unix(), // Token berlaku selama 72 jam
+		"user_id":  user.ID,                         // ID pengguna dari database
+		"email":    user.Email,                      // Email pengguna
+		"role":     user.Role,                       // Role pengguna (misal: patient, doctor)
+		"exp":      time.Now().Add(72 * time.Hour).Unix(), // Token berlaku selama 72 jam
 	})
 
 	// Tanda tangani token dengan secret

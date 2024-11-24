@@ -1,15 +1,13 @@
-// src/App.js
+// src/App.jsx
 import React from 'react';
+import { RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import { RouterProvider } from 'react-router-dom'; // Pastikan ini diimpor
-import router from './routers/AppRouter'; // Pastikan rutenya diimpor
+import router from './routers/AppRouter';
 
-const App = () => {
-  return (
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
-  );
-};
+const App = () => (
+  <AuthProvider>
+    <RouterProvider router={router} />
+  </AuthProvider>
+);
 
 export default App;

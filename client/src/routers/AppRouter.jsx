@@ -1,8 +1,9 @@
 // src/routers/AppRouter.js
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom'; // Tambahkan Navigate di sini
 import Register from '../components/Register';
 import Login from '../components/Login';
-import { useAuth } from '../context/AuthContext'; // Impor useAuth
+import Dashboard from '../pages/Dashboard';
+import PrivateRoute from '../routers/PrivateRoute';
 
 const router = createBrowserRouter([
   {
@@ -12,6 +13,18 @@ const router = createBrowserRouter([
   {
     path: '/Login',
     element: <Login />,
+  },
+  {
+    path: '/dashboard',
+    element: (
+      <PrivateRoute>
+        <Dashboard />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: '*',
+    element: <Navigate to="/Login" replace />, // Redirect semua rute tak dikenal ke Login
   },
 ]);
 

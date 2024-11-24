@@ -1,12 +1,21 @@
-// src/components/PrivateRoute.js
+// src/routers/PrivateRoute.jsx
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const PrivateRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+  const location = useLocation();
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  if (isLoading) {
+    return <div>Loading...</div>; // Indikator loading sementara
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/Login" replace state={{ from: location }} />;
+  }
+
+  return children;
 };
 
-export default PrivateRoute;
+export default PrivateRoute; // Pastikan ini adalah ekspor default
