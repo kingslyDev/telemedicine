@@ -1,10 +1,30 @@
 // src/services/authService.js
 import axios from 'axios';
 
-// Base URL API backend
+// Instance untuk endpoint tanpa prefix `/api`
 const API = axios.create({
-  baseURL: 'http://localhost:8080', // Ganti dengan URL backend Anda jika berbeda
+  baseURL: 'http://localhost:8080/', // Untuk login dan register
 });
+
+// Instance untuk endpoint dengan prefix `/api`
+const APIWithPrefix = axios.create({
+  baseURL: 'http://localhost:8080/api', // Untuk endpoint dengan prefix `/api`
+});
+
+// Tambahkan interceptor untuk menyertakan token
+APIWithPrefix.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('access_token'); // Ambil token dari 'access_token'
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+      console.log('Authorization header set:', config.headers['Authorization']); // Debugging
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // Fungsi untuk register
 export const register = (username, password, email, phonenumber, role) => {
@@ -27,3 +47,6 @@ export const login = async (email, password) => {
     throw error;
   }
 };
+
+// Default export untuk API dengan prefix `/api`
+export { APIWithPrefix };

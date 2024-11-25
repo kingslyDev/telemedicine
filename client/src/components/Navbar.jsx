@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate(); // Mendefinisikan navigate
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const handleEditProfile = () => {
+    if (user && user.id) {
+      navigate(`/Edit/${user.id}`); // Navigasi ke halaman edit profile
+    } else {
+      console.error('User ID tidak ditemukan');
+    }
+  };
 
   const handleLogout = () => {
     logout();
-    setMenuOpen(false); // Close dropdown if open
+    setMenuOpen(false); // Tutup dropdown jika sedang terbuka
+    navigate('/login'); // Navigasi ke halaman login setelah logout
   };
 
   const navLinks = [
@@ -45,9 +55,7 @@ const Navbar = () => {
               <DropdownMenuContent className="bg-white rounded shadow-md">
                 <DropdownMenuLabel className="text-gray-600 font-semibold">My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <Link to="/profile">
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                </Link>
+                <DropdownMenuItem onClick={handleEditProfile}>Profile</DropdownMenuItem>
                 <Link to="/result">
                   <DropdownMenuItem>Lihat Hasil</DropdownMenuItem>
                 </Link>
@@ -96,9 +104,9 @@ const Navbar = () => {
           {user ? (
             <>
               <li>
-                <Link to="/profile" className="text-sm font-medium text-gray-800 hover:text-green-700 transition duration-200">
+                <button onClick={handleEditProfile} className="text-sm font-medium text-gray-800 hover:text-green-700 transition duration-200">
                   Profile
-                </Link>
+                </button>
               </li>
               <li>
                 <Link to="/result" className="text-sm font-medium text-gray-800 hover:text-green-700 transition duration-200">

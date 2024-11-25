@@ -42,6 +42,9 @@ func main() {
 	// Register public routes (tanpa autentikasi)
 	routes.RegisterAuthRoutes(router)
 
+	// ROUTE PROFILE
+	routes.RegisterProfileRoutes(router)
+
 	// Group routes dengan middleware JWT
 	protected := router.Group("/api")
 	protected.Use(middleware.JWTAuthMiddleware()) // Middleware JWT

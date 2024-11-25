@@ -3,9 +3,9 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kingslyDev/telemedicine/server/handlers/admin"
-	"github.com/kingslyDev/telemedicine/server/handlers/doctor"
-	"github.com/kingslyDev/telemedicine/server/handlers/patient"
+	admin "github.com/kingslyDev/telemedicine/server/handlers/admins"
+	doctor "github.com/kingslyDev/telemedicine/server/handlers/doctors"
+	patient "github.com/kingslyDev/telemedicine/server/handlers/patients"
 	"github.com/kingslyDev/telemedicine/server/middleware"
 )
 

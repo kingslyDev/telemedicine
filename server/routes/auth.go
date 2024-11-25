@@ -5,7 +5,7 @@ import (
 	"github.com/kingslyDev/telemedicine/server/handlers/auth"
 )
 
-func RegisterAuthRoutes(r *gin.Engine) {
+func RegisterAuthRoutes(r *gin.Engine) {	
 	authRoutes := r.Group("/auth")
 	{
 		authRoutes.POST("/register", auth.RegisterHandler)
