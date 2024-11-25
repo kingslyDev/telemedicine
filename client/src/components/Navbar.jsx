@@ -26,7 +26,7 @@ const Navbar = () => {
       <div className="container mx-auto flex items-center justify-between py-4 px-6 md:px-12">
         {/* Logo */}
         <Link to="/" className="text-lg md:text-2xl font-bold text-gray-800">
-          MindTrack
+          HaloGhal
         </Link>
 
         {/* Desktop Navigation */}

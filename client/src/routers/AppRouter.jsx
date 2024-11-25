@@ -3,6 +3,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom'; // Tambahkan N
 import Register from '../components/Register';
 import Login from '../components/Login';
 import Dashboard from '../pages/Dashboard';
+import Tespneumina from '@/Pages/check/tespneumina';
 import PrivateRoute from '../routers/PrivateRoute';
 
 const router = createBrowserRouter([
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
   {
     path: '/Login',
     element: <Login />,
+  },
+  {
+    path: '/teskesehatan',
+    element: <Tespneumina />,
   },
   {
     path: '/dashboard',

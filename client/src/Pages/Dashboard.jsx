@@ -36,7 +36,7 @@ const Dashboard = () => {
         <div className="rectangle w-full">{/* <img src={rectangle} alt="Decorative Rectangle" className="w-full h-auto" /> */}</div>
         {/* bestChoice */}
         <div className="bestChoice p-10 text-center">
-          <h1 className="text-2xl md:text-4xl font-semibold px-4 md:px-60">Kenapa Milih Dr.Ghaly?</h1>
+          <h1 className="text-2xl md:text-4xl font-semibold px-4 md:px-60">Kenapa Milih HaloGhal?</h1>
           <div className="list pt-20">
             <ul className="flex flex-wrap justify-center items-center space-x-4 md:space-x-10">
               <li>

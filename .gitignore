@@ -1,0 +1,16 @@
+# Abaikan virtual environments
+venv/
+.env/
+
+# Abaikan file besar terkait Python atau machine learning
+*.dll
+*.pyd
+*.so
+*.bin
+*.h5
+*.ckpt
+
+# Abaikan file sementara
+*.log
+*.tmp
+*.cache
