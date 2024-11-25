@@ -1,29 +1,32 @@
+// src/routes/profile.go
 package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kingslyDev/telemedicine/server/handlers"
+	"github.com/kingslyDev/telemedicine/server/handlers/admin"
+	"github.com/kingslyDev/telemedicine/server/handlers/doctor"
+	"github.com/kingslyDev/telemedicine/server/handlers/patient"
 	"github.com/kingslyDev/telemedicine/server/middleware"
 )
 
 func RegisterProfileRoutes(r *gin.Engine) {
 	api := r.Group("/api")
 	{
-		// Protected routes
+		// Rute yang dilindungi dengan middleware JWT
 		protected := api.Group("/")
-		protected.Use(middleware.AuthMiddleware())
+		protected.Use(middleware.JWTAuthMiddleware())
 		{
-			// Patient routes
-			protected.GET("/patient/profile", handlers.GetPatientProfileHandler)
-			protected.PUT("/patient/profile", handlers.UpdatePatientProfileHandler)
+			// Rute Pasien
+			protected.GET("/patient/profile", patient.GetProfileHandler)
+			protected.PUT("/patient/profile", patient.UpdateProfileHandler)
 
-			// Doctor routes
-			protected.GET("/doctor/profile", handlers.GetDoctorProfileHandler)
-			protected.PUT("/doctor/profile", handlers.UpdateDoctorProfileHandler)
+			// Rute Dokter
+			protected.GET("/doctor/profile", doctor.GetProfileHandler)
+			protected.PUT("/doctor/profile", doctor.UpdateProfileHandler)
 
-			// Admin routes
-			protected.GET("/admin/profile", handlers.GetAdminProfileHandler)
-			protected.PUT("/admin/profile", handlers.UpdateAdminProfileHandler)
+			// Rute Admin
+			protected.GET("/admin/profile", admin.GetProfileHandler)
+			protected.PUT("/admin/profile", admin.UpdateProfileHandler)
 		}
 	}
 }

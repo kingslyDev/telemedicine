@@ -1,5 +1,5 @@
-// src/handlers/doctor.go
-package handlers
+// src/handlers/doctor/doctorprofile.go
+package doctor
 
 import (
 	"net/http"
@@ -7,10 +7,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kingslyDev/telemedicine/server/config"
+	"github.com/kingslyDev/telemedicine/server/handlers/helpers"
 	"github.com/kingslyDev/telemedicine/server/models"
 )
 
-// UpdateDoctorProfileInput defines the expected input for updating doctor profile
+// UpdateDoctorProfileInput mendefinisikan input yang diharapkan untuk memperbarui profil dokter
 type UpdateDoctorProfileInput struct {
 	FirstName         string `json:"first_name" binding:"required"`
 	LastName          string `json:"last_name" binding:"required"`
@@ -21,62 +22,56 @@ type UpdateDoctorProfileInput struct {
 	AvailableHours    string `json:"available_hours"` // JSON string
 }
 
-// GetDoctorProfileHandler retrieves the current doctor's profile
-func GetDoctorProfileHandler(c *gin.Context) {
-	// Ensure the user has the 'doctor' role
-	role, exists := c.Get("role")
-	if !exists || role != "doctor" {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})
+// GetProfileHandler mengambil profil dokter saat ini
+func GetProfileHandler(c *gin.Context) {
+	// Verifikasi peran pengguna
+	if !helpers.GetUserRole(c, "doctor") {
 		return
 	}
 
-	// Get the user ID from context
-	userID, exists := c.Get("user_id")
-	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID not found in token"})
+	// Ambil user_id dari konteks
+	userID, ok := helpers.GetUserID(c)
+	if !ok {
 		return
 	}
 
-	// Find the doctor associated with the user ID
+	// Cari profil dokter berdasarkan user_id
 	var doctor models.Doctor
 	if err := config.DB.Where("user_id = ?", userID).First(&doctor).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Doctor profile not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Profil dokter tidak ditemukan"})
 		return
 	}
 
-	// Respond with the doctor profile
+	// Kembalikan data profil dokter
 	c.JSON(http.StatusOK, gin.H{"doctor": doctor})
 }
 
-// UpdateDoctorProfileHandler handles updating a doctor's profile
-func UpdateDoctorProfileHandler(c *gin.Context) {
-	// Ensure the user has the 'doctor' role
-	role, exists := c.Get("role")
-	if !exists || role != "doctor" {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})
+// UpdateProfileHandler memperbarui profil dokter
+func UpdateProfileHandler(c *gin.Context) {
+	// Verifikasi peran pengguna
+	if !helpers.GetUserRole(c, "doctor") {
 		return
 	}
 
-	// Get the user ID from context
-	userID, exists := c.Get("user_id")
-	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID not found in token"})
+	// Ambil user_id dari konteks
+	userID, ok := helpers.GetUserID(c)
+	if !ok {
 		return
 	}
 
-	// Bind the input
+	// Bind data JSON ke struct input
 	var input UpdateDoctorProfileInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Find the doctor associated with the user ID
+	// Cari profil dokter
 	var doctor models.Doctor
 	if err := config.DB.Where("user_id = ?", userID).First(&doctor).Error; err != nil {
-		// If doctor profile does not exist, create one
+		// Jika profil dokter tidak ada, buat baru
 		doctor = models.Doctor{
-			UserID:            userID.(uint),
+			UserID:            userID,
 			FirstName:         input.FirstName,
 			LastName:          input.LastName,
 			Specialization:    input.Specialization,
@@ -88,11 +83,11 @@ func UpdateDoctorProfileHandler(c *gin.Context) {
 			UpdatedAt:         time.Now(),
 		}
 		if err := config.DB.Create(&doctor).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create doctor profile"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal membuat profil dokter"})
 			return
 		}
 	} else {
-		// Update existing doctor fields
+		// Perbarui profil dokter yang ada
 		doctor.FirstName = input.FirstName
 		doctor.LastName = input.LastName
 		doctor.Specialization = input.Specialization
@@ -102,13 +97,13 @@ func UpdateDoctorProfileHandler(c *gin.Context) {
 		doctor.AvailableHours = input.AvailableHours
 		doctor.UpdatedAt = time.Now()
 
-		// Save the updated doctor
+		// Simpan perubahan
 		if err := config.DB.Save(&doctor).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update doctor profile"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal memperbarui profil dokter"})
 			return
 		}
 	}
 
-	// Respond with the updated profile
-	c.JSON(http.StatusOK, gin.H{"message": "Profile updated successfully", "doctor": doctor})
+	// Kembalikan respon sukses
+	c.JSON(http.StatusOK, gin.H{"message": "Profil berhasil diperbarui", "doctor": doctor})
 }
