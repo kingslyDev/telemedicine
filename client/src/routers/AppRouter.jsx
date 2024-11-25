@@ -5,6 +5,7 @@ import Login from '../components/Login';
 import Dashboard from '../pages/Dashboard';
 import Tespneumina from '@/Pages/check/tespneumina';
 import PrivateRoute from '../routers/PrivateRoute';
+import EditProfile from '@/Pages/Editprofile';
 
 const router = createBrowserRouter([
   {
@@ -16,8 +17,16 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
+    path: '/Edit',
+    element: <EditProfile />,
+  },
+  {
     path: '/teskesehatan',
-    element: <Tespneumina />,
+    element: (
+      <PrivateRoute>
+        <Tespneumina />
+      </PrivateRoute>
+    ),
   },
   {
     path: '/dashboard',
