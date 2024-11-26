@@ -11,7 +11,7 @@ type Patient struct {
     DateOfBirth     time.Time `json:"date_of_birth"`
     Gender          string    `gorm:"type:text" json:"gender"`
     Address         string    `json:"address"`
-    MedicalHistory  string    `json:"medical_history"`
+    MedicalRecords   []MedicalRecord `gorm:"foreignKey:PatientID" json:"medical_records"`
     EmergencyContact string   `json:"emergency_contact"`
     BloodType       string    `json:"blood_type"`
     Allergies       string    `json:"allergies"`

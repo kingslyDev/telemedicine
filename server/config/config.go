@@ -14,7 +14,7 @@ func InitDB() {
     // Dapatkan variabel lingkungan atau set nilai default
     dsn := os.Getenv("DATABASE_URL")
     if dsn == "" {
-        dsn = "host=localhost user=postgres password=postgres dbname=telemedicine port=5433 sslmode=disable TimeZone=Asia/Jakarta"
+        dsn = "host=localhost user=postgres password=root dbname=telemedicine port=5433 sslmode=disable TimeZone=Asia/Jakarta"
     }
 
     var err error

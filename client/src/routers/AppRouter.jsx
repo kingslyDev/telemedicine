@@ -1,13 +1,15 @@
-// src/routers/AppRouter.js
-import { createBrowserRouter, Navigate } from 'react-router-dom'; // Tambahkan Navigate di sini
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import Register from '../components/Register';
 import Login from '../components/Login';
 import Dashboard from '../pages/Dashboard';
 import Tespneumina from '@/Pages/check/tespneumina';
 import PrivateRoute from '../routers/PrivateRoute';
 import EditProfile from '@/Pages/Editprofile';
+import PatientsPage from '@/Pages/PatientsPage';
+import PatientDetails from '@/Pages/PatientDetails';
 
 const router = createBrowserRouter([
+  // Public Routes
   {
     path: '/Register',
     element: <Register />,
@@ -16,9 +18,15 @@ const router = createBrowserRouter([
     path: '/Login',
     element: <Login />,
   },
+
+  // Private Routes
   {
     path: '/Edit',
-    element: <EditProfile />,
+    element: (
+      <PrivateRoute>
+        <EditProfile />
+      </PrivateRoute>
+    ),
   },
   {
     path: '/teskesehatan',
@@ -37,8 +45,25 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: '/data',
+    element: (
+      <PrivateRoute>
+        <PatientsPage />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: '/data/:id',
+    element: (
+      <PrivateRoute>
+        <PatientDetails />
+      </PrivateRoute>
+    ),
+  },
+
+  {
     path: '*',
-    element: <Navigate to="/Login" replace />, // Redirect semua rute tak dikenal ke Login
+    element: <Navigate to="/Login" replace />,
   },
 ]);
 
