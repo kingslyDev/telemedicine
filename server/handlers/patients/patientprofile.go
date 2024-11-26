@@ -17,11 +17,11 @@ type UpdatePatientProfileInput struct {
 	LastName         string `json:"last_name" binding:"required"`
 	DateOfBirth      string `json:"date_of_birth" binding:"required"` // Format: "YYYY-MM-DD"
 	Gender           string `json:"gender" binding:"required"`
-	Address          string `json:"address"`
-	MedicalHistory   string `json:"medical_history"`
-	EmergencyContact string `json:"emergency_contact"`
-	BloodType        string `json:"blood_type"`
-	Allergies        string `json:"allergies"`
+	Address          string `json:"address" binding:"omitempty,max=255"`
+	MedicalHistory   string `json:"medical_history" binding:"omitempty,max=500"`
+	EmergencyContact string `json:"emergency_contact" binding:"omitempty,max=20"`
+	BloodType        string `json:"blood_type" binding:"omitempty,max=3"`
+	Allergies        string `json:"allergies" binding:"omitempty,max=255"`
 }
 
 // GetProfileHandler mengambil profil pasien saat ini
@@ -39,7 +39,8 @@ func GetProfileHandler(c *gin.Context) {
 
 	// Cari profil pasien berdasarkan user_id
 	var patient models.Patient
-	if err := config.DB.Where("user_id = ?", userID).First(&patient).Error; err != nil {
+	err := config.DB.Preload("User").Where("user_id = ?", userID).First(&patient).Error
+	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Profil pasien tidak ditemukan"})
 		return
 	}
@@ -64,7 +65,7 @@ func UpdateProfileHandler(c *gin.Context) {
 	// Bind data JSON ke struct input
 	var input UpdatePatientProfileInput
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Data input tidak valid", "details": err.Error()})
 		return
 	}
 
@@ -77,8 +78,9 @@ func UpdateProfileHandler(c *gin.Context) {
 
 	// Cari profil pasien
 	var patient models.Patient
-	if err := config.DB.Where("user_id = ?", userID).First(&patient).Error; err != nil {
-		// Jika profil pasien tidak ada, buat baru
+	err = config.DB.Where("user_id = ?", userID).First(&patient).Error
+	if err != nil {
+		// Jika profil pasien tidak ditemukan, buat profil baru
 		patient = models.Patient{
 			UserID:            userID,
 			FirstName:         input.FirstName,

@@ -54,6 +54,12 @@ func main() {
 	// Register public routes (no authentication required)
 	routes.RegisterAuthRoutes(router)
 
+	// ROUTE PROFILE
+	routes.RegisterProfileRoutes(router)
+
+	// ROUTE PROFILE
+	routes.RegisterProfileRoutes(router)
+
 	// Public route: Fetch all patients
 	router.GET("/api/patients", func(c *gin.Context) {
 		log.Println("Fetching all patients...")

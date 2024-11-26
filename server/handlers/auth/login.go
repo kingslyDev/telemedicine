@@ -21,10 +21,12 @@ type LoginInput struct {
 
 // Struktur output untuk user
 type UserResponse struct {
-	ID    uint   `json:"id"`
-	Role  string `json:"role"`
-	Username string `json:"username"`
+    ID       uint   `json:"id"`
+    Role     string `json:"role"`
+    Username string `json:"username"`
+    Email    string `json:"email"`
 }
+
 
 // Handler untuk login
 func LoginHandler(c *gin.Context) {
@@ -72,10 +74,12 @@ func LoginHandler(c *gin.Context) {
 
 	// Struktur respons user
 	userResp := UserResponse{
-		ID:    user.ID,
-		Role:  user.Role,
+		ID:       user.ID,
+		Role:     user.Role,
 		Username: user.Username,
+		Email:    user.Email, // Include the email
 	}
+	
 
 	// Kirim token dan data user ke client
 	c.JSON(http.StatusOK, gin.H{

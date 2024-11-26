@@ -29,6 +29,10 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: '/Login',
+    element: <Login />,
+  },
+  {
     path: '/teskesehatan',
     element: (
       <PrivateRoute>
